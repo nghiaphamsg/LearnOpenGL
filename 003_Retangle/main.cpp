@@ -26,7 +26,7 @@ const char* fragmentShaderSource = "#version 330 core\n"
     "out vec4 FragColor;\n"
     "void main()\n"
     "{\n"
-    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+    "   FragColor = vec4(0.0f, 0.5f, 0.2f, 1.0f);\n"
     "}\n\0";
 
 int main()
@@ -133,15 +133,30 @@ int main()
     glDeleteShader(fragmentShader);
 
     /* Set up vertex data (and buffer(s)) and configure vertex attributes */
+    //float vertices[] = {
+    //    -0.5f, -0.5f, 0.0f, // left
+    //     0.5f, -0.5f, 0.0f, // right
+    //     0.0f,  0.5f, 0.0f  // top
+    //};
+
+    /* Element buffer objects */
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f, // left
-         0.5f, -0.5f, 0.0f, // right
-         0.0f,  0.5f, 0.0f  // top
+         /* Store 4 vertices for the rectangle */
+         0.5f,  0.5f, 0.0f,  // top right
+         0.5f, -0.5f, 0.0f,  // bottom right
+        -0.5f, -0.5f, 0.0f,  // bottom left
+        -0.5f,  0.5f, 0.0f,  // top left
     };
 
-    unsigned int VBO, VAO;
+    unsigned int indices[] = {
+        0, 1, 3,   // first triangle
+        1, 2, 3    // second triangle
+    };
+
+    unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
 
     /* Bind the Vertex Array Object first, then bind and set vertex buffer(s), 
        and then configure vertex attributes(s) */
@@ -150,6 +165,10 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    /* Set the vertex attributes pointers */
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
@@ -172,7 +191,13 @@ int main()
         /* Draw */
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        // Draw triangles
+        //glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        // Draw rectangle
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
 
         /* Using to render to during this render iteration
            and show it as output to the screen */
@@ -203,4 +228,16 @@ void processInput(GLFWwindow* window)
     /* Check whether the user has pressed the escape key then close window */
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+
+    /* Press 1 for filled */
+    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    /* Press 2 for wireframe */
+    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    /* Press 3 for point */
+    if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 }

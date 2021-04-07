@@ -1,5 +1,3 @@
-// OpenGL_1.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -70,7 +68,6 @@ int main()
 
         glfwSwapBuffers(mainWindow);
     }
-
 
     return 0;
 }
