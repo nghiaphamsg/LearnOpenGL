@@ -17,26 +17,6 @@ void processInput(GLFWwindow* window);
 
 const GLint WIDTH = 800, HEIGHT = 600;
 
-const char* vertexShaderSource =
-    "#version 450 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "layout (location = 1) in vec3 aColor;\n"
-    "out vec3 ourColor;\n"
-    "void main()\n"
-    "{\n"
-        "gl_Position = vec4(aPos, 1.0);\n"
-        "ourColor = aColor;\n"
-    "}\n\0";
-
-const char* fragmentShaderSource =
-    "#version 450 core\n"
-    "in vec3 ourColor;\n"
-    "out vec4 FragColor;\n"
-    "void main()\n"
-    "{\n"
-        "FragColor = vec4(ourColor, 1.0);\n"
-    "}\n\0";
-
 int main()
 {
     /* Init GLFW */
@@ -74,11 +54,6 @@ int main()
     int buffWidth = 0;
     int buffHeight = 0;
     glfwSetFramebufferSizeCallback(mainWindow, frameBufferResizeCallback);
-    //glfwGetFramebufferSize(mainWindow, &buffWidth, &buffHeight);
-
-    /* Setup viewport sizes
-       setup the size of the part we're drawing to on our window */
-    //glViewport(0, 0, buffWidth, buffHeight);
 
     /* Tell GLFW to make the context of our window the main context on the current thread */
     glfwMakeContextCurrent(mainWindow);
@@ -100,12 +75,6 @@ int main()
     Shaders ourShader("4.5.shader.vs", "4.5.shader.fs");
 
     /* Set up vertex data (and buffer(s)) and configure vertex attributes */
-    //float vertices[] = {
-    //    -0.5f, -0.5f, 0.0f, // left
-    //     0.5f, -0.5f, 0.0f, // right
-    //     0.0f,  0.5f, 0.0f  // top
-    //};
-
     /* Element buffer objects */
     float vertices[] = {
          /* Store 4 vertices for the rectangle */
@@ -170,10 +139,7 @@ int main()
         //int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
         //glUniform4f(vertexColorLocation, 1.0f, greenValue, 0.0f, 1.0f);
 
-        // Draw triangles
-        //glDrawArrays(GL_TRIANGLES, 0, 3);
-
-        // Draw rectangle
+         // Draw rectangle
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
